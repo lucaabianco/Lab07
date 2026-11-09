@@ -21,6 +21,14 @@ class View:
         # Controller
         self.controller = None
 
+        #inizializzo il toggle
+        self.toggle_cambia_tema = None
+
+        #inizializzo i dropdown
+        self.dd_biblioteca = None
+        self.dd_genere = None
+
+
     def show_alert(self, messaggio):
         self.alert.show_alert(messaggio)
 
@@ -37,9 +45,27 @@ class View:
 
         # --- Sezione 2: Filtraggio ---
         # TODO
+        self.dd_biblioteca = ft.Dropdown(label="Biblioteca", width = 500,
+                               on_select=self.controller.handler_btn_sel_biblioteca)
+        self.dd_biblioteca.options.append(ft.DropdownOption(key="A", text="A"))
+
+
+        self.dd_genere = ft.Dropdown(label="Genere",width = 200,
+                               on_select=self.controller.handler_btn_sel_genere)
+        self.dd_genere.options.append(ft.DropdownOption(key="A", text="A"))
+
+
+        row_sect_2 = ft.Row([self.dd_biblioteca, self.dd_genere],
+                     alignment = ft.MainAxisAlignment.CENTER)
 
         # Sezione 3: Libri
         # TODO
+        btn_mostra_libri = ft.Button(content = "Mostra libri",
+                                     on_click=self.controller.handler_btn_mostra_libri)
+
+
+
+
 
         # --- Toggle Tema ---
         self.toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=self.cambia_tema)
@@ -54,9 +80,13 @@ class View:
 
             # Sezione 2: Filtraggio
             # TODO
+            row_sect_2,
+            ft.Divider(),
 
             # Sezione 3: Libri
             # TODO
+            btn_mostra_libri,
+            ft.Divider(),
         )
 
         self.page.scroll = "adaptive"

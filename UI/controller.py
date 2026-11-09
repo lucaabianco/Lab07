@@ -19,9 +19,16 @@ class Controller:
 
     # POPOLA DROPDOWN
     # TODO
+    def handler_btn_sel_biblioteca(self):
+        pass
+
+    def handler_btn_sel_genere(self):
+        pass
 
     # CALLBACKS DROPDOWN
     # TODO
 
     # AZIONE: MOSTRA LIBRI
     # TODO
+    def handler_btn_mostra_libri(self):
+        pass
