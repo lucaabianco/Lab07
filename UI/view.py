@@ -8,6 +8,8 @@ from UI.alert import AlertManager
 '''
 
 class View:
+    NESSUN_FILTRO = "__NESSUN_FILTRO__"
+
     def __init__(self, page: ft.Page):
         # Page
         self.page = page
@@ -27,6 +29,7 @@ class View:
         #inizializzo i dropdown
         self.dd_biblioteca = None
         self.dd_genere = None
+        self.lv_libri = None
 
 
     def show_alert(self, messaggio):
@@ -45,14 +48,16 @@ class View:
 
         # --- Sezione 2: Filtraggio ---
         # TODO
-        self.dd_biblioteca = ft.Dropdown(label="Biblioteca", width = 500,
-                               on_select=self.controller.handler_btn_sel_biblioteca)
-        self.dd_biblioteca.options.append(ft.DropdownOption(key="A", text="A"))
 
+        self.dd_biblioteca = ft.Dropdown(label="Biblioteca", width=500, value=self.NESSUN_FILTRO,options=[ft.DropdownOption(key=self.NESSUN_FILTRO, text="Nessun filtro")],
+            on_select=self.controller.handler_btn_sel_biblioteca)
 
-        self.dd_genere = ft.Dropdown(label="Genere",width = 200,
-                               on_select=self.controller.handler_btn_sel_genere)
-        self.dd_genere.options.append(ft.DropdownOption(key="A", text="A"))
+        self.dd_genere = ft.Dropdown(
+            label="Genere", width=200,
+            value=self.NESSUN_FILTRO,
+            options=[ft.DropdownOption(key=self.NESSUN_FILTRO, text="Nessun filtro")],
+            on_select=self.controller.handler_btn_sel_genere,
+        )
 
 
         row_sect_2 = ft.Row([self.dd_biblioteca, self.dd_genere],
@@ -63,7 +68,7 @@ class View:
         btn_mostra_libri = ft.Button(content = "Mostra libri",
                                      on_click=self.controller.handler_btn_mostra_libri)
 
-
+        self.lv_libri = ft.ListView(height=420, width=900, spacing=5, padding=10)
 
 
 
@@ -87,10 +92,40 @@ class View:
             # TODO
             btn_mostra_libri,
             ft.Divider(),
+            self.lv_libri,
+            ft.Divider()
         )
 
         self.page.scroll = "adaptive"
         self.page.update()
+
+    def popola_biblioteche(self, biblioteche):
+        """Aggiunge le biblioteche al relativo dropdown."""
+        self.dd_biblioteca.options = [ft.DropdownOption(key=self.NESSUN_FILTRO, text="Nessun filtro")]
+        for biblioteca in biblioteche:
+            self.dd_biblioteca.options.append(ft.DropdownOption(key=str(biblioteca.id), text=biblioteca.nome))
+
+
+
+    def popola_generi(self, generi):
+        """Aggiunge tutti i generi distinti al relativo dropdown."""
+        self.dd_genere.options = [ft.DropdownOption(key=self.NESSUN_FILTRO, text="Nessun filtro")]
+        for genere in generi:
+            self.dd_genere.options.append(ft.DropdownOption(key=genere, text=genere))
+
+    def mostra_libri(self, libri, nomi_biblioteche):
+        """Mostra i libri filtrati dal Model"""
+        self.lv_libri.controls.clear()
+
+        for libro in libri:
+            nome_biblioteca = nomi_biblioteche.get(libro.id_biblioteca, str(libro.id_biblioteca))
+
+            anno = libro.anno_pubblicazione
+            self.lv_libri.controls.append(ft.ListTile(title=ft.Text(libro.titolo),subtitle=ft.Text(
+                                                                        f"Autore: {libro.autore} | Genere: {libro.genere} | "
+                                                                        f"Anno: {anno} | Biblioteca: {nome_biblioteca}"),))
+        self.page.update()
+
 
     def cambia_tema(self, e):
         """ Cambia tema scuro/chiaro """

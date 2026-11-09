@@ -9,14 +9,15 @@ from model.biblioteca_DTO import Biblioteca
 class BibliotecaDAO:
     def __init__(self):
         pass
-
     # TODO
 
     def read_libraries_from_db(self): #legge tutte le biblioteche
         cnx = DBConnect.get_connection()
-        if cnx is not None:
-            print("Connection established")
+        if cnx is None:
+            raise ConnectionError("Connessione fallita")
 
+        cursor= None
+        try:
             query = f"""SELECT b.*
                        FROM biblioteca b
                     """
@@ -26,9 +27,8 @@ class BibliotecaDAO:
             for row in cursor:
                 biblioteca = Biblioteca(*row)
                 result.append(biblioteca)
-
-            cursor.close()
+            return result  #lista delle biblioteche
+        finally:
+            if cursor is not None:
+                cursor.close()
             cnx.close()
-            print("Libraries read from database")
-            return result  #lista delle librerie
-
