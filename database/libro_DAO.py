@@ -18,7 +18,11 @@ class LibroDAO:
 
         cursor= None
         try:
-            query = f"SELECT l.* FROM libro l"
+            query = f"""
+                        SELECT id, titolo, autore, genere, anno_pubblicazione, id_biblioteca
+                        FROM libro
+                        ORDER BY titolo, id
+                        """
 
             cursor = cnx.cursor()
             cursor.execute(query)
@@ -41,16 +45,16 @@ class LibroDAO:
 
         cursor = None
         try:
-            query = f"""
-                        SELECT l.id, l.titolo, l.autore, l.genere,
+            query = """
+                SELECT l.id, l.titolo, l.autore, l.genere,
                        l.anno_pubblicazione, l.id_biblioteca
-                       FROM libro l
-                       WHERE l.genere = COALESCE(%s, l.genere) 
-                       AND l.id_biblioteca = COALESCE(%s, l.id_biblioteca)
-                       ORDER BY l.titolo, l.id 
-                    """
+                FROM libro l
+                WHERE (%s IS NULL OR l.genere = %s)
+                  AND (%s IS NULL OR l.id_biblioteca = %s)
+                ORDER BY l.titolo, l.id
+            """
             cursor = cnx.cursor()
-            cursor.execute(query, (genere, id_biblioteca))
+            cursor.execute(query, (genere, genere, id_biblioteca, id_biblioteca))
             result = []
             for row in cursor:
                 libro = Libro(*row)
@@ -81,6 +85,8 @@ class LibroDAO:
             result = []
             for row in cursor:
                 result.append(row[0])
+            return result
+
         finally:
             if cursor is not None:
                 cursor.close()

@@ -9,7 +9,6 @@ from model.biblioteca_DTO import Biblioteca
 class BibliotecaDAO:
     def __init__(self):
         pass
-    # TODO
 
     def read_libraries_from_db(self): #legge tutte le biblioteche
         cnx = DBConnect.get_connection()

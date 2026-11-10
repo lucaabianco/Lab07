@@ -47,11 +47,13 @@ class View:
         self.txt_titolo = ft.Text(value="Biblioteche di Torino", size=38, weight=ft.FontWeight.BOLD)
 
         # --- Sezione 2: Filtraggio ---
-        # TODO
 
-        self.dd_biblioteca = ft.Dropdown(label="Biblioteca", width=500, value=self.NESSUN_FILTRO,options=[ft.DropdownOption(key=self.NESSUN_FILTRO, text="Nessun filtro")],
-            on_select=self.controller.handler_btn_sel_biblioteca)
-
+        self.dd_biblioteca = ft.Dropdown(
+            label="Biblioteca", width=500,
+            value=self.NESSUN_FILTRO,
+            options=[ft.DropdownOption(key=self.NESSUN_FILTRO, text="Nessun filtro")],
+            on_select=self.controller.handler_btn_sel_biblioteca,
+        )
         self.dd_genere = ft.Dropdown(
             label="Genere", width=200,
             value=self.NESSUN_FILTRO,
@@ -60,11 +62,10 @@ class View:
         )
 
 
-        row_sect_2 = ft.Row([self.dd_biblioteca, self.dd_genere],
+        row_sect_2 = ft.Row(controls = [self.dd_biblioteca, self.dd_genere],
                      alignment = ft.MainAxisAlignment.CENTER)
 
         # Sezione 3: Libri
-        # TODO
         btn_mostra_libri = ft.Button(content = "Mostra libri",
                                      on_click=self.controller.handler_btn_mostra_libri)
 
@@ -75,6 +76,8 @@ class View:
         # --- Toggle Tema ---
         self.toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=self.cambia_tema)
 
+        self.controller.inizializza()
+
         # --- Layout della pagina ---
         self.page.add(
             self.toggle_cambia_tema,
@@ -84,14 +87,11 @@ class View:
             ft.Divider(),
 
             # Sezione 2: Filtraggio
-            # TODO
             row_sect_2,
             ft.Divider(),
 
             # Sezione 3: Libri
-            # TODO
             btn_mostra_libri,
-            ft.Divider(),
             self.lv_libri,
             ft.Divider()
         )
@@ -122,8 +122,7 @@ class View:
 
             anno = libro.anno_pubblicazione
             self.lv_libri.controls.append(ft.ListTile(title=ft.Text(libro.titolo),subtitle=ft.Text(
-                                                                        f"Autore: {libro.autore} | Genere: {libro.genere} | "
-                                                                        f"Anno: {anno} | Biblioteca: {nome_biblioteca}"),))
+                                                                        f"Autore: {libro.autore} | Genere: {libro.genere} | "                                                           f"Anno: {anno} | Biblioteca: {nome_biblioteca}"),))
         self.page.update()
 
 
